@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Logo from "../assets/logo.svg";
+import Lommgo from "../assets/lommgo.png";
 
 export default function Contacts({ contacts, changeChat }) {
   const [currentUserName, setCurrentUserName] = useState(undefined);
   const [currentUserImage, setCurrentUserImage] = useState(undefined);
   const [currentSelected, setCurrentSelected] = useState(undefined);
   useEffect(async () => {
+    if (localStorage.getItem("chat-app-current-user")) {
     const data = await JSON.parse(
-      localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+      localStorage.getItem("chat-app-current-user")
     );
     setCurrentUserName(data.username);
     setCurrentUserImage(data.avatarImage);
-  }, []);
+  }}, []);
   const changeCurrentChat = (index, contact) => {
     setCurrentSelected(index);
     changeChat(contact);
@@ -22,8 +23,8 @@ export default function Contacts({ contacts, changeChat }) {
       {currentUserImage && currentUserImage && (
         <Container>
           <div className="brand">
-            <img src={Logo} alt="logo" />
-            <h3>ChitChat</h3>
+            <img src={Lommgo} alt="logo" />
+            <h3><span style={{color:"#5CE1E6"}}>Chat</span>buddy</h3>
           </div>
           <div className="contacts">
             {contacts.map((contact, index) => {
@@ -68,7 +69,10 @@ const Container = styled.div`
   display: grid;
   grid-template-rows: 10% 75% 15%;
   overflow: hidden;
-  background-color: #080420;
+  // background-color: #080420;
+  background: #0F2027;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #1f3b47, #203A43, #0F2027);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #1f3b47, #203A43, #0F2027); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   .brand {
     display: flex;
     align-items: center;
@@ -119,12 +123,12 @@ const Container = styled.div`
       }
     }
     .selected {
-      background-color: #9a86f3;
+      background-color: #3e768e;
     }
   }
 
   .current-user {
-    background-color: #0d0d30;
+    background-color: #0F2027;
     display: flex;
     justify-content: center;
     align-items: center;
