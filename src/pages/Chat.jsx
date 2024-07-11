@@ -27,7 +27,10 @@ export default function Chat() {
   }, []);
   useEffect(() => {
     if (currentUser) {
-      socket.current = io(host);
+      socket.current = io(host, {
+        withCredentials: true,
+        transports: ['websocket', 'polling']
+      });
       socket.current.emit("add-user", currentUser._id);
     }
   }, [currentUser]);
