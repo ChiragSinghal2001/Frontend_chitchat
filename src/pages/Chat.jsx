@@ -7,6 +7,7 @@ import { allUsersRoute, host } from "../utils/APIRoutes";
 import ChatContainer from "../components/ChatContainer";
 import Contacts from "../components/Contacts";
 import Welcome from "../components/Welcome";
+axios.defaults.withCredentials = true;
 
 export default function Chat() {
   const navigate = useNavigate();
@@ -14,16 +15,35 @@ export default function Chat() {
   const [contacts, setContacts] = useState([]);
   const [currentChat, setCurrentChat] = useState(undefined);
   const [currentUser, setCurrentUser] = useState(undefined);
-  useEffect(async () => {
-    if (!localStorage.getItem("chat-app-current-user")) {
-      navigate("/login");
-    } else {
-      setCurrentUser(
-        await JSON.parse(
-          localStorage.getItem("chat-app-current-user")
-        )
-      );
-    }
+  // useEffect(async () => {
+  //   if (!localStorage.getItem("chat-app-current-user")) {
+  //     navigate("/login");
+  //   } else {
+  //     setCurrentUser(
+  //       await JSON.parse(
+  //         localStorage.getItem("chat-app-current-user")
+  //       )
+  //     );
+  //   }
+  // }, []);
+  useEffect(() => {
+    const fetchUser = async () => {
+      const storedUser = localStorage.getItem("chat-app-current-user");
+
+      if (!storedUser) {
+        navigate("/login");
+      } else {
+        try {
+          const parsedUser = await JSON.parse(storedUser);
+          setCurrentUser(parsedUser);
+        } catch (error) {
+          console.error("Failed to parse user data:", error);
+          navigate("/login");
+        }
+      }
+    };
+
+    fetchUser();
   }, []);
   useEffect(() => {
     if (currentUser) {
@@ -38,7 +58,11 @@ export default function Chat() {
   useEffect(async () => {
     if (currentUser) {
       if (currentUser.isAvatarImageSet) {
-        const data = await axios.get(`${allUsersRoute}/${currentUser._id}`);
+        console.log("current user id",currentUser._id);
+        const data = await axios.get(`${allUsersRoute}/${currentUser._id}`,{
+          withCredentials:true,
+        });
+        console.log("dn d",data.data);
         setContacts(data.data);
       } else {
         navigate("/setAvatar");

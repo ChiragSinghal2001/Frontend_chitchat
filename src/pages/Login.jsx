@@ -6,6 +6,7 @@ import Lommgo from "../assets/lommgo.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { loginRoute } from "../utils/APIRoutes";
+axios.defaults.withCredentials = true;
 
 export default function Login() {
   const navigate = useNavigate();
@@ -17,8 +18,20 @@ export default function Login() {
     draggable: true,
     theme: "dark",
   };
+  // useEffect(() => {
+  //   if (localStorage.getItem("chat-app-current-user")) {
+  //     navigate("/");
+  //   }
+  // }, [navigate]);
+
   useEffect(() => {
-    if (localStorage.getItem("chat-app-current-user")) {
+    // Check if the user is in localStorage or cookies
+    const userFromLocalStorage = localStorage.getItem("chat-app-current-user");
+    const userFromCookies = document.cookie.split(';').some((item) => item.trim().startsWith('auth_token='));
+
+    // If user exists in localStorage or cookies, navigate
+    if (userFromLocalStorage 
+      && userFromCookies) {
       navigate("/");
     }
   }, [navigate]);
@@ -46,6 +59,8 @@ export default function Login() {
       const { data } = await axios.post(loginRoute, {
         username,
         password,
+      }, {
+        withCredentials: true,
       });
       if (data.status === false) {
         toast.error(data.msg, toastOptions);
@@ -53,10 +68,13 @@ export default function Login() {
       if (data.status === true) {
         localStorage.setItem(
           "chat-app-current-user",
-          JSON.stringify(data.user)
+          JSON.stringify(data.savedUser)
         );
 
-        navigate("/");
+        // navigate("/");
+        setTimeout(() => {
+          navigate("/");
+        }, 5);
       }
     }
   };

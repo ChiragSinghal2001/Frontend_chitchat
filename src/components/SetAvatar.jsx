@@ -36,6 +36,8 @@ export default function SetAvatar() {
 
       const { data } = await axios.post(`${setAvatarRoute}/${user._id}`, {
         image: avatars[selectedAvatar],
+      },{
+        withCredentials:true,
       });
 
       if (data.isSet) {
@@ -56,7 +58,9 @@ export default function SetAvatar() {
     const data = [];
     for (let i = 0; i < 4; i++) {
       const image = await axios.get(
-        `${api}/${Math.round(Math.random() * 1000)}`
+        `${api}/${Math.round(Math.random() * 1000)}`, {
+          withCredentials: false,
+        }
       );
       const buffer = new Buffer.from(image.data);
       data.push(buffer.toString("base64"));

@@ -6,6 +6,7 @@ import Lommgo from "../assets/lommgo.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { registerRoute } from "../utils/APIRoutes";
+axios.defaults.withCredentials = true;
 
 export default function Register() {
   const navigate = useNavigate();
@@ -69,6 +70,8 @@ export default function Register() {
         username,
         email,
         password,
+      }, {
+        withCredentials: true,
       });
 
       if (data.status === false) {
@@ -77,7 +80,7 @@ export default function Register() {
       if (data.status === true) {
         localStorage.setItem(
           "chat-app-current-user",
-          JSON.stringify(data.user)
+          JSON.stringify(data.savedUser)
         );
         navigate("/");
       }
