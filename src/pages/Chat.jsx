@@ -59,11 +59,17 @@ export default function Chat() {
     if (currentUser) {
       if (currentUser.isAvatarImageSet) {
         console.log("current user id",currentUser._id);
-        const data = await axios.get(`${allUsersRoute}/${currentUser._id}`,{
-          withCredentials:true,
-        });
-        console.log("dn d",data.data);
-        setContacts(data.data);
+        try {
+          const data = await axios.get(`${allUsersRoute}/${currentUser._id}`,{
+            withCredentials:true,
+          });
+          console.log("dn d",data.data);
+          setContacts(data.data);
+        } catch (error) {
+          console.error(error);
+          navigate("/login");
+          
+        }
       } else {
         navigate("/setAvatar");
       }
